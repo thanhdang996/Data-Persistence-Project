@@ -11,10 +11,12 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text ScoreAndName;
     public GameObject GameOverText;
-    
+
+    private int m_score;
+    private int hightScore = 0;
     private bool m_Started = false;
-    private int m_Points;
     
     private bool m_GameOver = false;
 
@@ -22,6 +24,8 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        ScoreAndName.text = $"Best Score: {PlayerPrefs.GetInt(GameConst.HIGHT_SCORE, 0)}, Name: {PlayerPrefs.GetString(GameConst.PLAYER_HIGHT_SCORE, "")}";
+        hightScore = PlayerPrefs.GetInt("Score");
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -64,13 +68,21 @@ public class MainManager : MonoBehaviour
 
     void AddPoint(int point)
     {
-        m_Points += point;
-        ScoreText.text = $"Score : {m_Points}";
+        m_score += point;
+        ScoreText.text = $"Score : {m_score}";
     }
 
     public void GameOver()
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+
+        if(m_score > PlayerPrefs.GetInt(GameConst.HIGHT_SCORE, 0))
+        {
+            hightScore = m_score;
+            PlayerPrefs.SetInt(GameConst.HIGHT_SCORE, hightScore);
+            PlayerPrefs.SetString(GameConst.PLAYER_HIGHT_SCORE, PlayerPrefs.GetString(GameConst.CURRENT_PLAYER_NAME, ""));
+        }
+        ScoreAndName.text = $"Best Score: {PlayerPrefs.GetInt(GameConst.HIGHT_SCORE, 0)}, Name: {PlayerPrefs.GetString(GameConst.PLAYER_HIGHT_SCORE, "")}";
     }
 }
